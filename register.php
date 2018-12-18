@@ -1,37 +1,24 @@
 <?php
 
-$servername = "localhost";
-$username = "vinogautam";
-$password = "";
-$dbname = "training";
+include 'dp.php';
 
-$conn = mysqli_connect($servername, $username, $password, $dbname);
-
-if (!$conn)
-
-{
-    die("Connection failed: " . mysqli_connect_error());
-
-    
-}
 
 //print_r($_POST);
-if(isset($_POST['name'])){
+if(isset($_POST['Name'])){
+$Name = $_POST['Name'];
+$Email=$_POST['Email'];
+$Phone = $_POST['Phone'];
+$Password=$_POST['pass_confirmation'];
+$created = date('Y-m-d H:i:s');
 
-$name = $_POST['name'];
-$email=$_POST['email'];
-$password = $_POST['password'];
-$conpassword=$_POST['conpassword'];
 
-
-
-	$sql = "INSERT INTO isoftnuser (name,email,password,conpassword)
-				VALUES ('$name','$email','$password','$conpassword')";
+	$sql = "INSERT INTO users (Name,Email,Phone,Password,Date)
+				VALUES ('$Name','$Email','$Phone','$Password','$created')";
 //print_r($sql);
 			if (mysqli_query($conn, $sql)) {
-	    	    echo "New record created successfully";
+	    	   $msg = 1;
 					} else {
-	    			echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+	    			$msg = 2;
 
 	            	}
 }
@@ -84,22 +71,29 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
             <h2 class="main-title-w3layouts mb-2 text-center text-white">Register</h2>
             <!--// main-heading -->
             <div class="form-body-w3-agile text-center w-lg-50 w-sm-75 w-100 mx-auto mt-5">
-                <form id="formCheckPassword" method="POST">
+                <form action="" id="registration-form" method="POST">
                     <div class="form-group">
                         <label>Username</label>
-                        <input type="text" class="form-control"pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" placeholder="Enter username" required="" name="name">
+                        <input type="user" class="form-control" placeholder="user name" data-validation="required" name="Name" data-validation="length alphanumeric" 
+                                  data-validation-length="3-12" 
+		                          data-validation-error-msg="User name has to be an alphanumeric value (3-12 chars)">
                     </div>
                     <div class="form-group">
                         <label>Email address</label>
-                        <input type="email" class="form-control" placeholder="Enter email" required="" name="email">
+                        <input type="email" class="form-control" placeholder="email" data-validation="required" name="Email" data-validation="email">
                     </div>
                     <div class="form-group">
-                        <label>Password</label>
-                        <input type="password" class="form-control" placeholder="Password" required="" name="password" id="password">
+                        <label>Phone number</label>
+                        <input type="text" class="form-control" placeholder="phone number" data-validation="length" data-validation-length="10"  name="Phone">
+
                     </div>
                     <div class="form-group">
-                        <label>Confirm Password</label>
-                        <input type="password" class="form-control" placeholder="Password" required="" name="conpassword" id="conpassword">
+                        <label> Password</label>
+                        <input type="password" class="form-control" placeholder="Password" data-validation="required" name="pass_confirmation">
+                    </div>
+                    <div class="form-group">
+                        <label> ConfirmPassword</label>
+                        <input type="password" class="form-control" placeholder="ConfirmPassword" data-validation="confirmation" name="pass">
                     </div>
                     <div class="form-check text-center">
                         <input type="checkbox" class="form-check-input" id="exampleCheck1">
@@ -117,15 +111,35 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 
             <!-- Copyright -->
             <div class="copyright-w3layouts py-xl-3 py-2 mt-xl-5 mt-4 text-center">
-                <p>© 2018 Modernize . All Rights Reserved | Design by
-                    <a href="http://w3layouts.com/"> W3layouts </a>
+                <p>© <?= date('Y');?> Modernize . All Rights Reserved | Design by
+                    <a href="http://w3layouts.com/"> IsoftMinds</a>
                 </p>
             </div>
             <!--// Copyright -->
         </div>
     </div>
 
-
+    
+    <div class="modal fade bd-example-modal-sm" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" >
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="mySmallModalLabel">
+                        <?php if($msg == 1){?>Success<?php }?>
+                        <?php if($msg == 2){?>Error<?php }?>
+                    </h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <?php if($msg == 1){?>Registered Successfully<?php }?>
+                    <?php if($msg == 2){?>Error while signup<?php }?>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <!-- Required common Js -->
     <script src='js/jquery-2.2.3.min.js'></script>
     <!-- //Required common Js -->
@@ -133,7 +147,20 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
     <!-- Js for bootstrap working-->
     <script src="js/bootstrap.min.js"></script>
     <!-- //Js for bootstrap working -->
-
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.3.26/jquery.form-validator.min.js"></script>
+    
+    <script type="text/javascript">
+        $.validate({
+            form : '#registration-form',
+            modules : 'security'
+        });
+        
+        
+        <?php if(isset($msg)){?>
+        $('#loginModal').modal('show')
+        <?php }?>
+        
+    </script>
 
 </body>
 

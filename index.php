@@ -1,42 +1,26 @@
 <?php
-$servername = "localhost";
-$username = "vinogautam";
-$password = "";
-$dbname = "training";
-
-$conn = mysqli_connect($servername, $username, $password, $dbname);
-
-if (!$conn)
-
-{
-    die("Connection failed: " . mysqli_connect_error());
-
-    
-}
-
+ include 'dp.php';
 //print_r($_POST);
-if(isset($_POST['emailid']))
+if(isset($_POST['Email']))
 {
-$emailid = $_POST['emailid'];
-$password=$_POST['password'];
+$Email = $_POST['Email'];
+$Password=$_POST['Password'];
 
-$sql= "SELECT * from isoftadm where(emailid='$emailid')";
+$sql= "SELECT * from users where Email='$Email'AND Password='$Password'";
     $res=mysqli_query($conn,$sql);
         if (mysqli_num_rows($res) > 0) {
         // output data of each row
         $row = mysqli_fetch_assoc($res);
-         if ($emailid==$row['emailid'])
+         if ($Email==$row['Email'])
                     {
-                        echo "email already exists";
+                       // echo "email already exists";
+                        header ('Location:dashboard.php');
                     
                     }
-        }
-        elseif($emailid=='');
-        {
-            echo"create an account";
-        }
      
-    
+        } else {
+            $err = 1;
+        }
     
     
     
@@ -95,12 +79,12 @@ $sql= "SELECT * from isoftadm where(emailid='$emailid')";
                 <form  method="POST" id="registration-form">
                     <div class="form-group">
                         <label>Email address</label>
-                        <input data-validation="required"type="email" name="emailid" class="form-control" placeholder="Enter email"  >
+                        <input data-validation="required"type="email" name="Email" class="form-control" placeholder="Enter email"  >
                                 
                     </div>
                     <div class="form-group">
                         <label>Password</label>
-                        <input data-validation="required" type="password"name="password" class="form-control" placeholder="Password"  >
+                        <input data-validation="required" type="password"name="Password" class="form-control" placeholder="Password"  >
                             
                     </div>
                     <div class="d-sm-flex justify-content-between">
@@ -109,7 +93,7 @@ $sql= "SELECT * from isoftadm where(emailid='$emailid')";
                             <label class="form-check-label" for="exampleCheck1">Remember me</label>
                         </div>
                         <div class="forgot col-md-6 text-sm-right text-center">
-                            <a href="forgot.html">forgot password?</a>
+                            <a href="forgot.php">forgot password?</a>
                         </div>
                     </div>
                     <button type="submit" name="submit" class="btn btn-primary error-w3l-btn mt-sm-5 mt-3 px-4">Login</button>
@@ -124,14 +108,30 @@ $sql= "SELECT * from isoftadm where(emailid='$emailid')";
 
             <!-- Copyright -->
             <div class="copyright-w3layouts py-xl-3 py-2 mt-xl-5 mt-4 text-center">
-                <p>© 2018 Modernize . All Rights Reserved | Design by
-                    <a href="http://w3layouts.com/"> W3layouts </a>
+                <p>© <?= date('Y-M') ;?> All Rights Reserved | Design by
+                    <a href="www.isoftminds.com/"> Isofftminds </a>
                 </p>
             </div>
             <!--// Copyright -->
         </div>
     </div>
-
+    
+    <div class="modal fade bd-example-modal-sm" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" >
+                        <div class="modal-dialog modal-sm">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title" id="mySmallModalLabel">Error</h4>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    Invalid Username or Password!!!
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+    
     <!-- Required common Js -->
     <script src='js/jquery-2.2.3.min.js'></script>
     <!-- //Required common Js -->
@@ -146,6 +146,11 @@ $sql= "SELECT * from isoftadm where(emailid='$emailid')";
         $.validate({
             form : '#registration-form'
         });
+        
+        <?php if(isset($err)){?>
+        $('#loginModal').modal('show')
+        <?php }?>
+        
     </script>
     
     </body>
